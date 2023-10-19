@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+
+
 <div>
   <p>
     <mat-toolbar>
@@ -18,18 +21,20 @@
   
   <div class="row">      
     <div class="col card">  
-      <form method="post" enctype="multipart/form-data" action="{% url 'cargar_imagen' %}">
+      <form>
         <label class="custom-file-upload">
           <input type="file" (change)="onFileSelected($event)" style="display: none;">
           <div class="btn btn-outline-primary">Seleccionar archivo</div>
-        </label>    
-        <button class="btn btn-outline-primary" type="submit">Analizar Imagen</button>  
-        <button class="btn btn-outline-primary deleted" onclick="deletedFile()" >Eliminar Imagen</button>       
-      </form>
+        </label>   
+      </form> 
+      <button class="btn btn-outline-primary" (click)="resultImg()">Analizar Imagen</button>
+      <button class="btn btn-outline-primary deleted" (click)="deletedFile()" [disabled]="!result">Eliminar Imagen</button>
+      
+
     </div>
     <div class="col">
       <h1 class="title">Resultado</h1>
-      <p class="subtitle fail">La persona no tiene neumonía</p>
+      <p class="subtitle fail" *ngIf="statusd">{{status + ' ' + porcentajeTrue + '% ' + end }}</p>
     </div>
   </div>
 </div>

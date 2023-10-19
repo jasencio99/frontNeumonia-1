@@ -12,21 +12,26 @@ export class AppComponent {
   selectedFile: File | undefined;
   imageUrl: any;
   result = false;
+  status: any;
+  statusd = false;
   data: any;
-  payload: any;
+  payload: FormData = new FormData();
+  porcentajeTrue: any;
+  end: any;
 
   constructor(private apiService: MedicineService) { }
 
   onFileSelected(event: any) {
     this.selectedFile = event.target.files[0];
     const fileInput = event.target;
-    if (this.selectedFile != null){
+
+    if (this.selectedFile) {
       this.result = true;
-      this.payload = this.selectedFile;
-    }else {
+      this.payload.append('imagen', this.selectedFile, this.selectedFile.name); 
+    } else {
       this.result = false;
     }
-    fileInput.value = "";
+    fileInput.value = '';
   }
 
   getImageDataUrl(file: File): string {
@@ -35,32 +40,43 @@ export class AppComponent {
     reader.onload = () => {
       this.imageUrl = reader.result as string;
     };
-    return this.imageUrl; // Devuelve la URL de datos
+    return this.imageUrl; 
   }
 
   deletedFile(): void {
-    if(this.selectedFile != null){
-        console.log("No ha seleccionado una imagen");
-    }else{
+    if (this.selectedFile) {
       this.selectedFile = undefined;
-      console.log("imagen eliminada");
+      this.payload.delete('imagen'); 
+      this.statusd = false
+      this.imageUrl = ''
+    } else {
     }
-
   }
 
   resultImg(): void {
-    console.log(this.payload, 'imageeeen');
-    if(this.result){
-      this.apiService.getData(this.payload).subscribe((response) => {
-        this.data = response;
-        console.log(this.data);
-      }, error => {
-          console.error('ERROR', error);
-      });
-    }
-   
-    
-  }
+    this.statusd = false; 
+    this.apiService.getData(this.payload).subscribe((response) => {
+      this.statusd = true;
+      this.data = response;
+      if (this.data.resultado.resultado === true){
+        this.status = 'El paciente tiene un ';
+        this.porcentajeTrue = this.data.resultado.confiabilidad_si;
+        this.end = 'de tener neumonía'
+
+
+      }else{
+        this.status = 'El paciente tiene un ';
+        this.porcentajeTrue = this.data.resultado.confiabilidad_no;
+        this.end = 'de no tener neumonía '
+
+      }
+    }, error => {
+        console.error('ERROR', error);
+    });
+  // }
+ 
+  
+}
   
   
 }

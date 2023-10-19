@@ -9,9 +9,9 @@ export class MedicineService {
 
   constructor(private http: HttpClient) { }
 
-  public getData(imagen: File): Observable<any> {
+  public getData(formData: FormData): Observable<any> {
     
-    return this.http.post('', imagen);
+    return this.http.post('http://127.0.0.1:8000/deteccion_neumonia/', formData);
 
   }
 }
